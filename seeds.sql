@@ -5,5 +5,4 @@ VALUES ('SALES')
         ('LEGAL')
         ('EXECUTIVES')
         ('DEVELOPERS')
-
-INSERT INTO 
+INSERT INTO role_id ()

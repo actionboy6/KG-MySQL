@@ -17,7 +17,7 @@ CREATE TABLE employee (
     manager_id INT
    
 
-CREATE TABLE role (
+CREATE TABLE role_id (
     id INT PRIMARY KEY
     title: VARCHAR(30)
     salary: DECIMAL
