@@ -31,14 +31,25 @@ inquirer
             case 'Show me Employee':
                 getEmployee()
                 break;
-            case 'Add Department':
-                addDepartment()
+            case 'Add Employee':
+                addEmployee()
+                console.log('Employee Added')
                 break;
             case 'Show me Departments':
                 getDepartments()
                 console.log('show Dept')
                 break;
-        
+            case 'Add Department':
+                addDepartment()
+                break;
+            case 'Show me Roles':
+                getRole()
+                console.log('Here are the roles')
+                break;
+            case 'Add Role':
+                addRole()
+                console.log('Role added')
+                break;
             default:
                 console.log('bye')
                 break;
@@ -46,11 +57,6 @@ inquirer
     })
 }
     function getEmployee() {
-        // db.query('SELECT * FROM employee', function (err, results) {
-        //     let employee = [results]
-        //     console.table(employee)
-
-        // });
         db.promise().query('SELECT * FROM employee').then(([data]) => {
             let employee = data
             console.table(employee)
@@ -67,6 +73,15 @@ inquirer
         })
 
     }
+
+    function getRole() {
+        db.promise().query('SELECT * FROM role_id').then(([data]) =>{
+            let roles = data
+            console.table(roles)
+            start()
+        })
+    }
+
     function addDepartment(department) {
         inquirer.prompt([{
 
@@ -81,9 +96,28 @@ inquirer
 
 
     }
-start()
-// app.get('/api/team_db', (req, res) => res.json ('./query.sq'));
 
-// app.listen(PORT, () => {
-//     console.log(`Server running on port ${PORT}`);
-// });
+    function addEmployee(employee) {
+        inquirer.prompt([{
+
+            type: 'input',
+            name: 'addEmployee',
+            message: 'Who do you want to add?'
+        }]).then((data) => {
+            db.promise().query('INSERT INTO employee (employee_name) VALUE (?);', data.addEmployee)
+            start()
+        })
+    }
+
+    function addRole(roles) {
+        inquirer.prompt([{
+
+            type: 'input',
+            name: 'addRole',
+            message: 'What is the new role?'
+        }]).then((data) => {
+            db.promise().query('INSERT INTO role_id (role_id) VALUE (?);', data.addRole)
+            start()
+        })
+    }
+start()
