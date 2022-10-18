@@ -6,7 +6,7 @@ VALUES ('SALES'),
         ('EXECUTIVES'),
         ('DEVELOPERS');
 
-INSERT INTO role_id(title, salary, department_id)
+INSERT INTO role(title, salary, department_id)
 VALUES  ('SALESPERSON', 60000, 101),
         ('LEAD ENGINEER', 150000, 102),
         ('ENGINEER', 90000, 102 ),

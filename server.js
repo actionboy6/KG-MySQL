@@ -1,30 +1,21 @@
-const e = require('express');
-const inquirer = require('inquirer');
 // const express = require('express');
-const mysql = require('mysql2');
-require('console.table')
-const PORT = process.env.PORT || 3001;
-// const app = express();
+// const inquirer = require('inquirer');
+// const mysql = require('mysql2');
+// require('console.table')
+// const PORT = process.env.PORT || 3001;
 
-const db = mysql.createConnection(
-    {
-        host: 'localhost',
-        user: 'root',
-        password: 'Password456',
-        database: 'team_db',
-    },
-    console.log('Connected to database')
-);
-
+const { prompt } = require("inquirer")
+const db = require("./db")
+require("console.table")
 function start(){
-inquirer
-    .prompt([{
+
+prompt([{
         type: 'list',
         name: 'userChoice',
         message: 'What would you like to do?',
         choices: [{name: 'Add Department'},
                 {name: 'Add Role'},
-                {name: 'Add employee'}, {name: 'Show me Employee'}, {name: 'Show me Departments'}, {name: "I'm Finished"}],  
+                {name: 'Add Employee'}, {name: 'Show me Employee'}, {name: 'Show me Departments'}, {name: 'Show me Roles'}, {name: "I'm Finished"}],  
     }]).then((data) => {
 
         switch (data.userChoice) {
@@ -33,22 +24,18 @@ inquirer
                 break;
             case 'Add Employee':
                 addEmployee()
-                console.log('Employee Added')
                 break;
             case 'Show me Departments':
                 getDepartments()
-                console.log('show Dept')
                 break;
             case 'Add Department':
                 addDepartment()
                 break;
             case 'Show me Roles':
                 getRole()
-                console.log('Here are the roles')
                 break;
             case 'Add Role':
                 addRole()
-                console.log('Role added')
                 break;
             default:
                 console.log('bye')
@@ -57,17 +44,19 @@ inquirer
     })
 }
     function getEmployee() {
-        db.promise().query('SELECT * FROM employee').then(([data]) => {
-            let employee = data
-            console.table(employee)
+        console.log('employee')
+        db.promise().query('SELECT * FROM employee').then(([getEmployeeData]) => {
+            let employee = getEmployeeData
+            
+            console.table(getEmployeeData)
             start()
         })
 
     }
 
     function getDepartments() {
-        db.promise().query('SELECT * FROM department').then(([data]) =>{
-            let departments = data
+        db.promise().query('SELECT * FROM department').then(([getDeptData]) =>{
+            let departments = getDeptData
             console.table(departments)
             start()
         })
@@ -83,13 +72,13 @@ inquirer
     }
 
     function addDepartment(department) {
-        inquirer.prompt([{
+        prompt([{
 
             type: 'input',
             name: 'addDept',
             message: 'What is the name of the department'
-        }]).then((data) => {
-            db.promise().query('INSERT INTO department (department_name) VALUE(?);', data.addDept)
+        }]).then((addDeptData) => {
+            db.promise().query('INSERT INTO department (department_name) VALUE(?)', addDeptData.addDept)
             start()
         })
 
@@ -98,26 +87,39 @@ inquirer
     }
 
     function addEmployee(employee) {
-        inquirer.prompt([{
+        prompt([{
 
             type: 'input',
             name: 'addEmployee',
             message: 'Who do you want to add?'
-        }]).then((data) => {
-            db.promise().query('INSERT INTO employee (employee_name) VALUE (?);', data.addEmployee)
+        }]).then((addEmplData) => {
+            db.promise().query('SELECT * FROM employee', addEmplData.addEmpl)
             start()
         })
     }
 
-    function addRole(roles) {
-        inquirer.prompt([{
+    function addRole() {
+        prompt([{
 
             type: 'input',
-            name: 'addRole',
-            message: 'What is the new role?'
-        }]).then((data) => {
-            db.promise().query('INSERT INTO role_id (role_id) VALUE (?);', data.addRole)
-            start()
-        })
-    }
-start()
+            name: 'title',
+            message: 'What is the new title?'
+        },
+        {
+
+            type: 'input',
+            name: 'salary',
+            message: 'What is the salary?',
+        },
+        {
+            type: 'input',
+            name: 'department',
+            message: 'What is the department_id'
+        }])
+        .then((addRoleData) => {
+            db.promise().query('INSERT INTO role (title, salary, department_id) VALUE (?)', addRoleData.addRole).then(data => {
+                start()
+            }).catch( (err) => {
+                console.log(err)
+            })
+        })}
